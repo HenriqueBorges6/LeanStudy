@@ -83,7 +83,7 @@ structure Book where
 def isZero (n : Nat) : Bool :=
   match n with
   | Nat.zero => true
-  | Nat.succ k => false
+  | Nat.succ _ => false
 
 
 def pred (n : Nat) : Nat :=
@@ -91,4 +91,33 @@ def pred (n : Nat) : Nat :=
   | Nat.zero => Nat.zero
   | Nat.succ k => k
 
-#eval pred 5
+def even (n : Nat ): Bool :=
+  match n with
+    | Nat.zero => true
+    | Nat.succ k => not (even k)
+
+inductive Sign where
+  | pos
+  | neg
+
+def posOrNegThree (s : Sign) : match s with | Sign.pos => Nat | Sign.neg => Int :=
+  match s with
+  | Sign.pos => (3 : Nat)
+  | Sign.neg => (-3 : Int)
+
+def sevens : String × (Int × Nat) := ("VII", (7, 4 + 3))
+
+def primesUnder10 : List Nat := [2, 3,5 , 7]
+
+def last_list {α : Type} (xs : List α) : Option α :=
+  match xs with
+    | n :: [] => n
+    | _ :: t => last_list t
+    | [] => none
+
+#eval last_list primesUnder10
+
+def List.findFirst? {α : Type} (xs : List α) (predicate : α → Bool) : Option α :=
+  match xs with
+    | [] => none
+    | n :: _  , predicate => n
