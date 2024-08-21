@@ -120,4 +120,31 @@ def last_list {α : Type} (xs : List α) : Option α :=
 def List.findFirst? {α : Type} (xs : List α) (predicate : α → Bool) : Option α :=
   match xs with
     | [] => none
-    | n :: _  , predicate => n
+    | n :: h => if predicate n then n else List.findFirst? h predicate
+
+def isPositive (n : Int ) : Bool :=
+  n > 0
+def numbers : List Int :=
+  [-10, -5, 0, 3, 7, -2]
+
+#eval List.findFirst? numbers isPositive
+
+
+def Prod.swap {α β : Type} (pair : α × β) : β × α :=
+  (pair.snd , pair.fst )
+
+#eval Prod.swap ("world" , "hello")
+
+
+inductive PetName : Type where
+  | Dog : String → PetName
+  | Cat : String → PetName
+
+def animals : List PetName :=
+  [PetName.Dog "Spot", PetName.Cat "Tiger", PetName.Dog "Fifi", PetName.Dog "Rex", PetName.Cat "Floof"]
+
+def howManyDogs (pets : List PetName) : Nat :=
+  match pets with
+  | [] => 0
+  | PetName.Dog _ :: morePets => howManyDogs morePets + 1
+  | PetName.Cat _ :: morePets => howManyDogs morePets
