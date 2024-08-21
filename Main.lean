@@ -148,3 +148,19 @@ def howManyDogs (pets : List PetName) : Nat :=
   | [] => 0
   | PetName.Dog _ :: morePets => howManyDogs morePets + 1
   | PetName.Cat _ :: morePets => howManyDogs morePets
+
+def zip {α β : Type} (xs : List α) (ys : List β) : List (α × β) :=
+  match xs, ys with
+  | [] , _ => []
+  | _ , [] => []
+  | x :: xn , y :: yn => (x,y) :: zip xn yn
+
+#eval zip [1, 2, 3, 4, 5] ["a", "b", "c", "d"]
+
+def take { α : Type } ( xs : List α) (n : Nat): List α :=
+  match xs, n with
+    | [],_ => []
+    | _ , 0 => []
+    | x :: xn, n => x :: take xn n.pred
+
+#eval take ["a", "b", "e", "l", "h", "a"] 4
