@@ -1,7 +1,5 @@
 import LeanStudy
 
-def main : IO Unit :=
-  IO.println s!"Hello, {hello}!"
 
 
 def joinStringsWith (a :String) (b :String ) (c :String) := (b.append a).append c
@@ -167,3 +165,8 @@ def take { α : Type } ( xs : List α) (n : Nat): List α :=
 #eval take ["a", "b", "e", "l", "h", "a"] 4
 
 --def distributive { α : Type } (p : α × (β ⊕ γ )) : α × (β ⊕ γ ) → (α × β) ⊕ (α × γ ) :=
+
+
+-- Cap 2
+
+def main : IO Unit := IO.println "Hello, world!"
