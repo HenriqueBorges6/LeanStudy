@@ -12,6 +12,7 @@ def joinStringsWith (a :String) (b :String ) (c :String) := (b.append a).append 
 
 def volume (l : Nat ) (c : Nat ) (h : Nat ) : Nat := l*c*h
 #check (volume)
+
 #eval volume 2 3 4
 
 structure Point where
@@ -164,3 +165,5 @@ def take { α : Type } ( xs : List α) (n : Nat): List α :=
     | x :: xn, n => x :: take xn n.pred
 
 #eval take ["a", "b", "e", "l", "h", "a"] 4
+
+--def distributive { α : Type } (p : α × (β ⊕ γ )) : α × (β ⊕ γ ) → (α × β) ⊕ (α × γ ) :=
