@@ -178,10 +178,12 @@ def quest1d : 5 < 18 := by simp
 
 def quintaentrada {α : Type} (xs : List α ) ( ok : xs.length > 4) : α  := xs[4]
 
+-- Cria um Type Pos dos números positivos
 inductive Pos : Type where
   | one : Pos
   | succ : Pos → Pos
 
+-- Cria uma clase
 class Plus (α : Type) where
   plus : α → α → α
 
@@ -230,4 +232,14 @@ instance : OfNat Pos (n + 1) where
 
 def eight : Pos := 8
 
+-- Exercise:
 
+structure PosNumber where
+  succ ::
+  pred : Nat
+
+def PosNumber.Plus : PosNumber → PosNumber → PosNumber
+  | a, b =>
+
+instance : Add PosNumber where
+  add := PosNumber.Plus
