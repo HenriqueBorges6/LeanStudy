@@ -170,3 +170,64 @@ def take { α : Type } ( xs : List α) (n : Nat): List α :=
 -- Cap 2
 
 def main : IO Unit := IO.println "Hello, world!"
+
+def quest1a : 2 + 3 = 5 := by rfl
+def quest1b : 15 - 8 = 7 := by rfl
+def quest1c : "Hello ".append "world" = "Hello world" := by rfl
+def quest1d : 5 < 18 := by simp
+
+def quintaentrada {α : Type} (xs : List α ) ( ok : xs.length > 4) : α  := xs[4]
+
+inductive Pos : Type where
+  | one : Pos
+  | succ : Pos → Pos
+
+class Plus (α : Type) where
+  plus : α → α → α
+
+instance : Plus Nat where
+  plus := Nat.add
+
+open Plus (plus)
+
+#eval plus 5 3
+
+def Pos.plus : Pos → Pos → Pos
+  | Pos.one, k => Pos.succ k
+  | Pos.succ n, k => Pos.succ (n.plus k)
+
+instance : Plus Pos where
+  plus := Pos.plus
+
+instance : Add Pos where
+  add := Pos.plus
+
+#eval plus 5 7
+
+
+def posToString (atTop : Bool) (p : Pos) : String :=
+  let paren s := if atTop then s else "(" ++ s ++ ")"
+  match p with
+  | Pos.one => "Pos.one"
+  | Pos.succ n => paren s!"Pos.succ {posToString false n}"
+
+instance : ToString Pos where
+  toString := posToString true
+
+def Pos.toNat : Pos → Nat
+  | Pos.one => 1
+  | Pos.succ n => n.toNat + 1
+
+instance : ToString Pos where
+  toString x := toString (x.toNat)
+
+instance : OfNat Pos (n + 1) where
+  ofNat :=
+    let rec natPlusOne : Nat → Pos
+      | 0 => Pos.one
+      | k + 1 => Pos.succ (natPlusOne k)
+    natPlusOne n
+
+def eight : Pos := 8
+
+
