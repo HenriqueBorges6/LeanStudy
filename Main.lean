@@ -183,14 +183,19 @@ inductive Pos : Type where
   | one : Pos
   | succ : Pos → Pos
 
--- Cria uma clase
+-- Class de type cria um nome, alguns parâmetros e uma coleção de métodos
 class Plus (α : Type) where
   plus : α → α → α
+/- Nome da classe : Plus
+   Argumentos: α : Type
+   Métodos: plus : α → α → α
+-/
 
-instance : Plus Nat where
-  plus := Nat.add
+-- Sobrecarga do método plus
+instance : Plus Nat where -- Plus Nat é um tipo
+  plus := Nat.add -- Método da classe Plus
 
-open Plus (plus)
+open Plus (plus) -- Métodos de classe de tipo são definidos em um namespace
 
 #eval plus 5 3
 
@@ -233,13 +238,3 @@ instance : OfNat Pos (n + 1) where
 def eight : Pos := 8
 
 -- Exercise:
-
-structure PosNumber where
-  succ ::
-  pred : Nat
-
-def PosNumber.Plus : PosNumber → PosNumber → PosNumber
-  | a, b =>
-
-instance : Add PosNumber where
-  add := PosNumber.Plus
