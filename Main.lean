@@ -238,3 +238,28 @@ instance : OfNat Pos (n + 1) where
 def eight : Pos := 8
 
 -- Exercise:
+-- Create Pos as a Struct
+structure IntPos where
+  succ ::
+  pred : Nat
+
+-- define sum operation
+def IntPos.plus (x : IntPos) (y : IntPos) : IntPos :=
+  { pred := x.pred + y.pred  + 1}
+
+-- One example
+def one : IntPos := { pred := 0 }
+def two : IntPos := { pred := 1 }
+#eval (IntPos.plus one two).pred
+
+-- Overloading Add
+instance : Add IntPos where
+  add := IntPos.plus
+
+-- Example using simbol " + "
+#eval (one + two).pred
+
+
+
+
+-- def IntPos.soma : IntPos → IntPos → IntPos :=
