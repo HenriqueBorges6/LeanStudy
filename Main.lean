@@ -238,7 +238,7 @@ instance : OfNat Pos (n + 1) where
 def eight : Pos := 8
 
 -- Exercise:
--- Create Pos as a Struct
+-- Create IntPos as a Struct
 structure IntPos where
   succ ::
   pred : Nat
@@ -261,7 +261,7 @@ instance : Add IntPos where
 
 -- Create a product function of IntPos numbers
 def IntPos.product (x : IntPos) (y : IntPos) : IntPos :=
-  { pred := x.pred * y.pred + x.pred + y.pred}
+  { pred := x.pred * y.pred + x.pred + y.pred }
 
 -- Example
 def seven : IntPos := { pred := 6 }
@@ -277,4 +277,52 @@ instance : Mul IntPos where
 
 
 
+/-
+def IntPosToString (atTop : Bool) (p : IntPos) : String :=
+    let paren s := if atTop then s else "(" ++ s ++ ")"
+  match p.pred with
+  | 0 => "succ 0"
+  | .succ n => let k : IntPos := {pred := n} ;
+                paren s!"Pos.succ {IntPosToString false k}"
+
+instance : ToString IntPos where
+  toString := IntPosToString true
+
+#eval one
+
 -- def IntPos.soma : IntPos → IntPos → IntPos :=
+-/
+
+-- Create a new Type
+inductive Evens : Type where
+  | zero : Evens
+  | succ : Evens → Evens
+
+-- Define some elements of this type
+def zero : Evens := Evens.zero
+def dois : Evens := Evens.succ (Evens.zero)
+
+-- Define sum operation
+def Evens.plus : Evens → Evens → Evens
+  | Evens.zero, k => k
+  | Evens.succ n , k => Evens.succ (n.plus k)
+
+-- testing sum operation
+def quatro : Evens := dois.plus dois
+
+-- oveloading sum operation to Add
+instance : Add Evens where
+  add := Evens.plus
+
+def seis : Evens := quatro + dois
+
+def EvensToString (atTop : Bool) (p : Evens) : String :=
+  let paren s := if atTop then s else "(" ++ s ++ ")"
+  match p with
+  | Evens.zero => "Evens.one"
+  | Evens.succ n => paren s!"Evens.succ {EvensToString false n}"
+
+instance : ToString Evens where
+  toString := EvensToString true
+
+#eval s!"{quatro}"
