@@ -259,6 +259,21 @@ instance : Add IntPos where
 -- Example using simbol " + "
 #eval (one + two).pred
 
+-- Create a product function of IntPos numbers
+def IntPos.product (x : IntPos) (y : IntPos) : IntPos :=
+  { pred := x.pred * y.pred + x.pred + y.pred}
+
+-- Example
+def seven : IntPos := { pred := 6 }
+def forty_nine : IntPos := { pred := 48 }
+#eval (IntPos.product seven forty_nine).pred
+
+-- Overloading
+instance : Mul IntPos where
+  mul := IntPos.product
+
+-- Example using " * " operator
+#eval ( seven * forty_nine).pred
 
 
 
