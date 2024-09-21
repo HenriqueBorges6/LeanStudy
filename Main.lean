@@ -275,9 +275,7 @@ instance : Mul IntPos where
 -- Example using " * " operator
 #eval ( seven * forty_nine).pred
 
-
-
-/-
+/--/
 def IntPosToString (atTop : Bool) (p : IntPos) : String :=
     let paren s := if atTop then s else "(" ++ s ++ ")"
   match p.pred with
@@ -292,7 +290,6 @@ instance : ToString IntPos where
 
 -- def IntPos.soma : IntPos → IntPos → IntPos :=
 -/
-
 -- Create a new Type
 inductive Evens : Type where
   | zero : Evens
@@ -326,3 +323,104 @@ instance : ToString Evens where
   toString := EvensToString true
 
 #eval s!"{quatro}"
+
+/- 4.2 Type Classes and Polymorphism -/
+
+def List.sum [Add α] [OfNat α 0] : List α → α
+  | [] => 0
+  | x :: xs => x + xs.sum
+
+def fourNats : List Nat := [1, 2, 3, 4]
+
+#eval fourNats.sum
+
+structure PPoint (α : Type) where
+  x : α
+  y : α
+deriving Repr
+
+instance [Add α] : Add (PPoint α) where
+  add p1 p2 := { x := p1.x + p2.x, y := p1.y + p2.y }
+
+/- Exercício
+Escreva uma instância de OfNat para o tipo de dado de
+número par dos exercícios da seção anterior que usa busca de
+instância recursiva. Para a instância base, é necessário
+escrever OfNat Even Nat.zero em vez de OfNat Even 0.
+-/
+
+instance : OfNat Evens Nat.zero where
+  ofNat := Evens.zero
+
+instance [OfNat Evens n] : OfNat Evens (Nat.succ (Nat.succ n)) where
+  ofNat := Evens.succ (Evens.succ ( OfNat.ofNat n ))
+
+def oito : Evens := 254
+#eval s!"Oito em Evens: {oito}"
+
+/- 4.3 -/
+
+-- Permitir soma de ℕ + Pos e Pos + ℕ
+def addNatPos : Nat → Pos → Pos
+  | 0, p => p
+  | n + 1, p => Pos.succ (addNatPos n p)
+
+def addPosNat : Pos → Nat → Pos
+  | p, 0 => p
+  | p, n + 1 => Pos.succ (addPosNat p n)
+
+-- Sobrcarregando
+
+instance : HAdd Nat Pos Pos where
+  hAdd := addNatPos
+
+instance : HAdd Pos Nat Pos where
+  hAdd := addPosNat
+
+#eval (3 : Pos) + (5 : Nat)
+#eval (3 : Nat) + (5 : Pos)
+
+-- Classe para soma de ℕ + Pos = Pos + ℕ
+class HPluss (α : Type) (β : Type) (γ : Type) where
+  hPlus : α → β → γ
+
+instance : HPluss Nat Pos Pos where
+  hPlus := addNatPos
+
+instance : HPluss Pos Nat Pos where
+  hPlus := addPosNat
+
+-- É necessário passar o tipo do retorno
+#eval (HPluss.hPlus (3 : Pos) (5 : Nat) : Pos)
+
+-- Evitamos definindo γ : Retorno como parâmetro
+class HPlus (α : Type) (β : Type) (γ : outParam Type) where
+  hPlus : α → β → γ
+
+instance : HPlus Nat Pos Pos where
+  hPlus := addNatPos
+
+instance : HPlus Pos Nat Pos where
+  hPlus := addPosNat
+
+#eval HPlus.hPlus (3 : Pos) (5 : Nat)
+
+instance [Add α] : HPlus α α α where
+  hPlus := Add.add
+
+-- Produz MetaVariáveis
+#check HPlus.hPlus (5 : Nat)
+
+
+/-
+Defina uma instância de HMul (PPoint α) α (PPoint α) que multiplique
+ambas as projeções pelo escalar. Deve funcionar para qualquer tipo α
+para o qual haja uma Mul α instância.
+
+Por exemplo:
+#eval {x := 2.5, y := 3.7 : PPoint Float} * 2.0
+deve render
+
+{ x := 5.000000, y := 7.400000 }
+
+-/
