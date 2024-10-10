@@ -1,5 +1,7 @@
 import LeanStudy
 
+-- exercises
+-- Defina a função potência
 
 
 def joinStringsWith (a :String) (b :String ) (c :String) := (b.append a).append c
@@ -411,7 +413,6 @@ instance [Add α] : HPlus α α α where
 -- Produz MetaVariáveis
 #check HPlus.hPlus (5 : Nat)
 
-
 /-
 Defina uma instância de HMul (PPoint α) α (PPoint α) que multiplique
 ambas as projeções pelo escalar. Deve funcionar para qualquer tipo α
@@ -424,3 +425,31 @@ deve render
 { x := 5.000000, y := 7.400000 }
 
 -/
+
+--instance [Mul α ]: HMul (PPoint α) α (PPoint α) where
+
+structure Monoid where
+  Carrier : Type
+  neutral : Carrier
+  op : Carrier → Carrier → Carrier
+
+def natMulMonoid : Monoid :=
+  { Carrier := Nat, neutral := 1, op := (· * ·) }
+
+def natAddMonoid : Monoid :=
+  { Carrier := Nat, neutral := 0, op := (· + ·) }
+
+def stringMonoid : Monoid :=
+  { Carrier := String, neutral := "", op := String.append }
+
+def listMonoid (α : Type) : Monoid :=
+  { Carrier := List α, neutral := [], op := List.append }
+
+def foldMap (M : Monoid) (f : α → M.Carrier) (xs : List α) : M.Carrier :=
+  let rec go (soFar : M.Carrier) : List α → M.Carrier
+    | [] => soFar
+    | y :: ys => go (M.op soFar (f y)) ys
+  go M.neutral xs
+
+instance : CoeSort Monoid Type where
+  coe m := m.Carrier
